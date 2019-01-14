@@ -32,18 +32,18 @@ HANDSHAKE+Thiery Baudet
 
 #### SET_CONFIG
 ```bash
-SET_CONFIG+$PREFERRED_COLOR+$BOARD_SIZE
+SET_CONFIG+$GAME_ID+$PREFERRED_COLOR+$BOARD_SIZE
 ```
 
 Set the game configuration and the color you'd like to play with.
+- `$GAME_ID`: **Int**. Game id provided by the server in the initial handshake.
 - `$PREFERRED_COLOR`: **Int**. integer representation of the color you'd like to play with. (0=random, 1=black, 2=white, 3-9=implemented later)
 
-
-- `$BOARD_SIZE`: **int**. Preferred board dimensions. Give `n` for an `n * n` board.
+- `$BOARD_SIZE`: **Int**. Preferred board dimensions. Give `n` for an `n * n` board.
 
 Example:
 ```bash
-SET_CONFIG+1+10
+SET_CONFIG+0+1+10
 ```
 
 #### MOVE
