@@ -1,10 +1,8 @@
 # GO! Protcol description
-<hr />
 
 The protocol uses a simple structure of `commands` and `parameters` delimited by a `+` sign and terminated by a new line. Commands are sent over a simple socket connection. Every command has to be sent on a new line. The order of the parameters is strictly defined in the command and it is assumed this order is followed. As such no flags or identifiers need to be provided.
 
 ## Flow
-<hr />
 
 The protocol is started when a player opens a socket connection to the server. The first player to connect will have control over the game configuration (e.g. board size, preferred color, number of players). 
 
@@ -15,11 +13,9 @@ If both players are identified and the configuration is set the server sends out
 After this the currently active player can send a move the server which can acknowledge the move and broadcast a new status. This is continued until the game is finished after which the server broadcasts the finished game status and the winner.
 
 ## Commands
-<hr />
 In the following description commands and parameters will be given in full caps where parameters are preceeded by a `$` sign. Commands have a set String representation which will be provided in a later section.
 
 ### Client commands
-<hr />
 
 #### Handshake
 ```bash
@@ -94,7 +90,6 @@ EXIT+1+Thiery Baudet
 ```
 
 ### Server messages
-<hr/>
 
 #### ACKNOWLEDGE_HANDSHAKE
 ```bash
@@ -178,7 +173,6 @@ UPDATE_STATUS+PLAYING;1;1 0 2 10;0000011120001200.....
 ```
 
 ### Custom data types
-<hr/>
 
 #### State
 ```bash
