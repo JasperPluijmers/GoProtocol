@@ -131,7 +131,7 @@ Sent to both players after 2 players have connected and identified themselves an
 
 example:
 ```bash
-ACKNOWLEDGE_CONFIG+Thiery Baudet+1+4+PLAYING;2;1 00 2 10;0000011120001200
+ACKNOWLEDGE_CONFIG+Thiery Baudet+1+4+PLAYING;2;0000011120001200
 ```
 
 #### ACKNOWLEDGE_MOVE
@@ -145,7 +145,7 @@ ACKNOWLEDGE_MOVE+$GAME_ID+$MOVE+$GAME_STATE
 
 example:
 ```bash
-ACKNOWLEDGE_MOVE+1+30;1+PLAYING;2;1 00 2 10;0000011120001200
+ACKNOWLEDGE_MOVE+1+30;1+PLAYING;2;0000011120001200
 ```
 
 #### INVALID_MOVE
@@ -169,7 +169,7 @@ Sent to clients if the state of the game changes at any moment outside of the re
 
 example:
 ```bash
-UPDATE_STATUS+PLAYING;1;1 0 2 10;0000011120001200
+UPDATE_STATUS+PLAYING;1;0000011120001200
 ```
 
 ### Custom data types
