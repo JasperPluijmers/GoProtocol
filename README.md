@@ -176,13 +176,12 @@ UPDATE_STATUS+PLAYING;1;1 0 2 10;0000011120001200
 
 #### State
 ```bash
-$STATUS;$CURRENT_PLAYER;$CAPTURED;$BOARD
+$STATUS;$CURRENT_PLAYER;$BOARD
 ```
 Current game state represented as a `;` delimited string.
 
 - `$STATUS`: **String**. Status of the game. Can be `WAITING`, `PLAYING`, `FINISHED`.
 - `$CURRENT_PLAYER`: **Int**. Color of the player who should make the next move. 
-- `$CAPTURED`: **String**: String representing the current captured tiles as `color captured_tiles color captured_tiles ...`, e.g. `1 00 2 10` when black has 0 points and white 10.
 - `$BOARD`: **String**; String representing the current board layout as a one dimensional array with the color of the tile at it's respective index. (0=empty, 1=black, 2=white, 3-9=implemented later).
 
 #### Move
