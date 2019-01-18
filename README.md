@@ -186,7 +186,7 @@ GAME_FINISHED+$GAME_ID+$WINNER+$SCORE+$MESSAGE
 ```
 - `$GAME_ID`: **Int**. Id provided in the initial handshake
 - `$WINNER`: **String**. Username of the winning player. 
-- `$SCORE`: **String**. `1:$POINTS_BLACK:2:$POINTS_WHITE`
+- `$SCORE`: **String**. `1;$POINTS_BLACK;2;$POINTS_WHITE`
 - `MESSAGE`: **String**. (OPTIONAL) Message to the players. For instance the reason the game ended (disconnect, 2 passes, no more valid moves, etc..).
 
 
