@@ -54,14 +54,14 @@ Place a stone on a tile.
 
 - `$GAME_ID`: **int**. Game id provided by the server on the initial handshake.
 - `$PLAYER_NAME`: **String**. Username as set in the initial handshake.
-- `$TILE_INDEX`: **int**. Tile you want to place your stone on. The index is one dimensional so for an `n * n` board placing a tile on row `i` column `j` the index is `i * n + j`.
+- `$TILE_INDEX`: **int**. Tile you want to place your stone on. The index is one dimensional so for an `n * n` board placing a tile on row `i` column `j` the index is `i * n + j`. `-1` for passing.
 
 example: 
 ```bash
 MOVE+1+Thiery Baudet+9
 ```
 
-#### PASS
+#### PASS (DEPRECATED!)
 ```bash
 PASS+$GAME_ID+$PLAYER_NAME
 ```
@@ -119,7 +119,7 @@ REQUEST_CONFIG+Please provide a preferred configuration using the SET_CONFIG+$PR
 
 #### ACKNOWLEDGE_CONFIG
 ```bash
-ACKNOWLEDGE_CONFIG+$PLAYER_NAME+$COLOR+$SIZE+$GAME_SATE
+ACKNOWLEDGE_CONFIG+$PLAYER_NAME+$COLOR+$SIZE+$GAME_SATE+$OPPONENT
 ```
 
 Sent to both players after 2 players have connected and identified themselves and the leader has provided the configuration. 
@@ -128,6 +128,7 @@ Sent to both players after 2 players have connected and identified themselves an
 - `$COLOR`:**int**. Integer representing the color to you by the server (1=black, 2=white, 3-9=implemented later)
 - `$SIZE`: **int**. Board size. `n` for an `n * n` board.
 - `$GAME_STATE`: **State**. String representation of the current game state. The format of the State object is explained in the next section.
+- `$OPPONENT`: **String**.  
 
 example:
 ```bash
@@ -160,6 +161,13 @@ example:
 INVALID_MOVE+Invalid move: Tile not empty.
 ```
 
+#### UNKOWN_COMMAND
+```bash
+UNKNOWN_COMMAND+$MESSAGE
+```
+Returned when a command is not recognized or invalid. 
+- `$MESSAGE`: **String**. Message.
+
 #### UPDATE_STATUS
 ```bash
 UPDATE_STATUS+$GAME_STATE
@@ -171,6 +179,16 @@ example:
 ```bash
 UPDATE_STATUS+PLAYING;1;0000011120001200
 ```
+
+#### GAME_FINISHED
+```bash
+GAME_FINISHED+$GAME_ID+$WINNER+$SCORE+$MESSAGE
+```
+- `$GAME_ID`: **Int**. Id provided in the initial handshake
+- `$WINNER`: **String**. Username of the winning player. 
+- `$SCORE`: **String**. `1:$POINTS_BLACK:2:$POINTS_WHITE`
+- `MESSAGE`: **String**. (OPTIONAL) Message to the players. For instance the reason the game ended (disconnect, 2 passes, no more valid moves, etc..).
+
 
 ### Custom data types
 
