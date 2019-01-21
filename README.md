@@ -161,7 +161,7 @@ example:
 INVALID_MOVE+Invalid move: Tile not empty.
 ```
 
-#### UNKOWN_COMMAND
+#### UNKNOWN_COMMAND
 ```bash
 UNKNOWN_COMMAND+$MESSAGE
 ```
