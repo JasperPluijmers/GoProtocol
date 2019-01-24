@@ -12,6 +12,13 @@ If both players are identified and the configuration is set the server sends out
 
 After this the currently active player can send a move to the server which can acknowledge the move and broadcast a new status. This is continued until the game is finished after which the server broadcasts the finished game status and the winner.
 
+When the game is finished the server asks the players if they want to play a rematch, if both respond with yes the game is restarted with the same config. If one of the players responds negative the other player is notified.
+ This new game is commenced with a new `ACKNOWLEDGE_CONFIG` command.
+## Notes
+
+The server is responsible for maintaining a valid gamestate, so it handles things like removing captured stones, calculating the scores
+and making sure the game flow is maintained. 
+
 ## Commands
 In the following description commands and parameters will be given in full caps where parameters are preceeded by a `$` sign. Commands have a set String representation which will be provided in a later section.
 
@@ -23,7 +30,7 @@ HANDSHAKE+$PLAYER_NAME
 ```
 
 Used to identify yourself to the server with your preferred username.
-- `$PLAYERNAME:` **String**. Preferred username.
+- `$PLAYERNAME:` **String**. Preferred username, is not allowed to contain the character '+'.
 
 Example: 
 ```bash
@@ -46,6 +53,18 @@ Example:
 SET_CONFIG+0+1+10
 ```
 
+#### SET_REMATCH
+```bash
+SET_REMATCH+$REMATCH
+```
+
+- `$REMATCH`: **int**. 1 if you would like a rematch, 0 if you would not.
+
+Example:
+```bash
+SET_REMATCH+1
+```
+
 #### MOVE
 ```bash
 MOVE+$GAME_ID+$PLAYER_NAME+$TILE_INDEX
@@ -59,20 +78,6 @@ Place a stone on a tile.
 example: 
 ```bash
 MOVE+1+Thiery Baudet+9
-```
-
-#### PASS (DEPRECATED!)
-```bash
-PASS+$GAME_ID+$PLAYER_NAME
-```
-Pass your current move.
-
-- `$GAME_ID`: **int**. Game id provided by the server on the initial handshake.
-- `$PLAYER_NAME`: **String**. Username as set in the initial handshake.
-
-example:
-```bash
-PASS+1+Thierry Baudet
 ```
 
 #### EXIT
@@ -117,6 +122,18 @@ example:
 REQUEST_CONFIG+Please provide a preferred configuration using the SET_CONFIG+$PREFERRED_COLOR+$BOARD_SIZE
 ```
 
+#### REQUEST_REMATCH
+```bash
+REQUEST_REMATCH
+```
+
+Sent to both players after the game is finished by 2 passes
+
+example:
+```bash
+REQUEST_REMATCH
+```
+
 #### ACKNOWLEDGE_CONFIG
 ```bash
 ACKNOWLEDGE_CONFIG+$PLAYER_NAME+$COLOR+$SIZE+$GAME_SATE+$OPPONENT
@@ -124,11 +141,11 @@ ACKNOWLEDGE_CONFIG+$PLAYER_NAME+$COLOR+$SIZE+$GAME_SATE+$OPPONENT
 
 Sent to both players after 2 players have connected and identified themselves and the leader has provided the configuration. 
 
-- `$PLAYER_NAME$`: **String**. Username granted to you by the server
+- `$PLAYER_NAME$`: **String**. Username granted to you by the server, this is the username you are obliged to use.
 - `$COLOR`:**int**. Integer representing the color to you by the server (1=black, 2=white, 3-9=implemented later)
 - `$SIZE`: **int**. Board size. `n` for an `n * n` board.
 - `$GAME_STATE`: **State**. String representation of the current game state. The format of the State object is explained in the next section.
-- `$OPPONENT`: **String**.  
+- `$OPPONENT`: **String**.  Username of the opponent.
 
 example:
 ```bash
@@ -147,6 +164,19 @@ ACKNOWLEDGE_MOVE+$GAME_ID+$MOVE+$GAME_STATE
 example:
 ```bash
 ACKNOWLEDGE_MOVE+1+30;1+PLAYING;2;0000011120001200
+```
+
+#### ACKNOWLEDGE_REMATCH
+```bash
+ACKNOWLEDGE_REMATCH+$REMATCH
+```
+
+Sent when either both players agree to a rematch or one person rejects a rematch.
+- `$REMATCH`: **int**. 1 if you would like a rematch, 0 if you would not.
+
+example:
+```bash
+ACKNOWLEDGE_REMATCH+1
 ```
 
 #### INVALID_MOVE
@@ -168,27 +198,16 @@ UNKNOWN_COMMAND+$MESSAGE
 Returned when a command is not recognized or invalid. 
 - `$MESSAGE`: **String**. Message.
 
-#### UPDATE_STATUS
-```bash
-UPDATE_STATUS+$GAME_STATE
-```
-Sent to clients if the state of the game changes at any moment outside of the regular game flow.
-- `$GAME_STATE`: **State**. Representation of the current game state.
-
-example:
-```bash
-UPDATE_STATUS+PLAYING;1;0000011120001200
-```
-
 #### GAME_FINISHED
 ```bash
 GAME_FINISHED+$GAME_ID+$WINNER+$SCORE+$MESSAGE
 ```
+
+Sent when a game is finished in any way. If someone disconnects or exits, the winner is the other person.
 - `$GAME_ID`: **Int**. Id provided in the initial handshake
 - `$WINNER`: **String**. Username of the winning player. 
-- `$SCORE`: **String**. `1;$POINTS_BLACK;2;$POINTS_WHITE`
-- `MESSAGE`: **String**. (OPTIONAL) Message to the players. For instance the reason the game ended (disconnect, 2 passes, no more valid moves, etc..).
-
+- `$SCORE`: **String**. `$POINTS_BLACK;$POINTS_WHITE`
+- `MESSAGE`: **String**. Message to the players. For instance the reason the game ended (disconnect, 2 passes, no more valid moves, etc..).
 
 ### Custom data types
 
@@ -198,7 +217,7 @@ $STATUS;$CURRENT_PLAYER;$BOARD
 ```
 Current game state represented as a `;` delimited string.
 
-- `$STATUS`: **String**. Status of the game. Can be `WAITING`, `PLAYING`, `FINISHED`.
+- `$STATUS`: **String**. Status of the game. Can be `PLAYING`, `FINISHED`.
 - `$CURRENT_PLAYER`: **Int**. Color of the player who should make the next move. 
 - `$BOARD`: **String**; String representing the current board layout as a one dimensional array with the color of the tile at it's respective index. (0=empty, 1=black, 2=white, 3-9=implemented later).
 
