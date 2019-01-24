@@ -57,6 +57,7 @@ SET_CONFIG+0+1+10
 ```bash
 SET_REMATCH+$REMATCH
 ```
+Sent as a response to `REQUEST_REMATCH`.
 
 - `$REMATCH`: **int**. 1 if you would like a rematch, 0 if you would not.
 
